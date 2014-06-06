@@ -1,0 +1,13 @@
+#!perl
+
+use strict;
+use warnings;
+use v5.10.1;
+use utf8;
+
+require Shunme::App;
+my $app = Shunme::App->new;
+$app->parse_options( @ARGV );
+my $exit_code = $app->run;
+
+exit( $exit_code );
