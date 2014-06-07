@@ -5,7 +5,7 @@ use warnings;
 use v5.10.1;
 use utf8;
 
-use Module::Load::Conditional qw[can_load];
+use Module::Load;
 use Carp;
 
 sub create_formatter {
@@ -14,7 +14,7 @@ sub create_formatter {
 
     my $module = 'Shunme::Formatter::' . $params{module};
 
-    can_load( modules => { $module => 0 } ) or croak "Can't load $module";
+    load $module;
 
     my $formatter = $module->new( %params );
 

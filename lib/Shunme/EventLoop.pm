@@ -5,7 +5,7 @@ use warnings;
 use v5.10.1;
 use utf8;
 
-use Module::Load::Conditional qw[can_load];
+use Module::Load;
 use Carp;
 
 require Shunme::Aggregator;
@@ -16,7 +16,7 @@ sub create_eventloop {
 
     my $module = 'Shunme::EventLoop::' . $params{module};
 
-    can_load( modules => { $module => 0 } ) or croak "Can't load $module";
+    load $module;
 
     my $eventloop = $module->new( %params );
 
