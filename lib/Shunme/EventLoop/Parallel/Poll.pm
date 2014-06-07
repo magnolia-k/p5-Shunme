@@ -1,4 +1,4 @@
-package Shunme::EventLoop::Parallel::Select;
+package Shunme::EventLoop::Parallel::Poll;
 
 use strict;
 use warnings;
@@ -9,7 +9,7 @@ use parent qw[Shunme::EventLoop];
 
 use Socket;
 use IO::Handle;
-use IO::Select;
+use IO::Poll;
 use POSIX 'WNOHANG';
 
 use Carp;
@@ -17,7 +17,7 @@ use Carp;
 $SIG{CHLD} = \&finish;
 $SIG{PIPE} = 'IGNORE';
 
-my $selector = IO::Select->new;
+my $poll = IO::Poll->new;
 our $obj;
 sub initialize {
     my $self = shift;
@@ -36,7 +36,7 @@ sub execute_eventloop {
 
         # Max Worker Check
         while ( ( keys %{ $self->{children} } ) >= $self->{max_worker} ) {
-            select( undef, undef, undef, 0.25 );
+            select( undef, undef, undef, 0.1 );
         }
 
         if ( my $test_script = $self->{iterator}->next ) {
@@ -52,7 +52,7 @@ sub execute_eventloop {
 
                 close $pa;
 
-                $selector->add( $ch );
+                $poll->mask( $ch => POLLOUT );
                 $self->{children}{$pid} = { fd => $ch, msg => '' };
 
             } else {
@@ -69,7 +69,8 @@ sub execute_eventloop {
             }
         }
 
-        if ( my @ready = $selector->can_read( 0 ) ) {
+        if ( $poll->poll( 0 ) >= 1 ) {
+            my @ready = $poll->handles;
 
             for my $fh ( @ready ) {
 
@@ -127,7 +128,7 @@ sub finish {
             $self->{children}{$child}->{msg} .= $buf;
         }
 
-        $selector->remove( $self->{children}{$child}->{fd} );
+        $poll->remove( $self->{children}{$child}->{fd} );
         close $self->{children}{$child}->{fd};
 
         if ( $self->{children}{$child}->{msg} ) {

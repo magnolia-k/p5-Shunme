@@ -17,7 +17,7 @@ sub new {
         library         => [],
 
         formatter       => $params{formatter} // 'Console',
-        eventloop       => $params{eventloop} // 'Parallel::Select',
+        eventloop       => $params{eventloop} // 'Parallel::Poll',
     };
 
     bless $self, $class;

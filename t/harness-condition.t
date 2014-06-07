@@ -18,7 +18,7 @@ subtest 'accessor' => sub {
     plan tests => 2;
 
     is( $condition->formatter, 'Console', 'formatter' );
-    is( $condition->eventloop, 'Parallel::Select', 'eventloop' );
+    is( $condition->eventloop, 'Parallel::Poll', 'eventloop' );
 
 };
 
