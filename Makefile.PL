@@ -28,7 +28,7 @@ WriteMakefile(
 
     PREREQ_PM => {
         'Test::Simple'  => '1.001002',
-        'TAP::Tree'     => 'v0.0.3',
+        'TAP::Tree'     => 'v0.0.4',
         'JSON'          => 0,
     },
 

@@ -13,5 +13,5 @@ on 'test' => sub {
 
 
 requires    'Test::Simple', '1.001002';
-requires    'TAP::Tree',    'v0.0.3';
+requires    'TAP::Tree',    'v0.0.4';
 requires    'JSON',         '0';
