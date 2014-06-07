@@ -71,9 +71,9 @@ sub summary {
 sub test_script { return $_[0]->{test_script}   }
 sub tap_tree    { return $_[0]->{tap_tree}      }
 sub exit_code   { return $_[0]->{exit_code}     }
-sub stdout      { return $_[0]->{stdout}        }
-sub stderr      { return $_[0]->{stderr}        }
-sub merged      { return $_[0]->{merged}        }
+sub stdout      { return ${ $_[0]->{stdout_ref} }   }
+sub stderr      { return ${ $_[0]->{stderr_ref} }   }
+sub merged      { return ${ $_[0]->{merged_ref} }   }
 
 # serialize methods
 sub to_msg_json {
@@ -83,32 +83,19 @@ sub to_msg_json {
         test_script => $self->{test_script},
         exit_code   => $self->{exit_code},
         tap_tree    => $self->{tap_tree}->tap_tree,
-        stdout      => $self->{stdout},
-        stderr      => $self->{stderr},
-        merged      => $self->{merged},
+        stdout      => ${ $self->{stdout_ref} },
+        stderr      => ${ $self->{stderr_ref} },
+        merged      => undef,
     };
 
     return encode_json( $tap_ref );
 }
-
-use Data::Dumper;
 
 sub from_msg_json {
     my $pkg  = shift;
     my $json = shift;
 
     my $tap_ref = decode_json( $json );
-
-    eval {
-        my $tap_tree = TAP::Tree->new(
-            tap_tree => $tap_ref->{tap_tree},
-            utf8 => 1
-            );
-    };
-
-    if ( $@ ) {
-        print Dumper( $tap_ref );
-    }
 
     my $tap = Shunme::TAP->new(
         test_script => $tap_ref->{test_script},
@@ -117,9 +104,9 @@ sub from_msg_json {
             tap_tree => $tap_ref->{tap_tree},
             utf8 => 1
             ),
-        stdout      => $tap_ref->{stdout},
-        stderr      => $tap_ref->{stderr},
-        merged      => $tap_ref->{merged},
+        stdout_ref   => \$tap_ref->{stdout},
+        stderr_ref   => \$tap_ref->{stderr},
+        merged_ref   => \$tap_ref->{merged},
         );
 
     return $tap;

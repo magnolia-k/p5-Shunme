@@ -15,6 +15,7 @@ sub new {
     my $self = {
         argv    => [],
         cmd     => undef,
+        verbose => undef,
     };
 
     bless $self, $class;
@@ -28,6 +29,7 @@ sub parse_options {
 
     GetOptionsFromArray( \@argv,
             'v|verbose' => sub { $self->{verbose}++ },
+            'b|blib'    => sub { $self->{blib}++ },
             );
 
     $self->{argv} = \@argv;
