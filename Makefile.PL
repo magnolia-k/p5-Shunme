@@ -30,6 +30,7 @@ WriteMakefile(
         'Test::Simple'  => '1.001002',
         'TAP::Tree'     => 'v0.0.4',
         'JSON'          => 0,
+        'JSON::XS'      => 0,
     },
 
     "EXE_FILES" => [

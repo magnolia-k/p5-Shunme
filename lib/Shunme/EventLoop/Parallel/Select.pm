@@ -83,7 +83,7 @@ sub execute_eventloop {
                 }
 
                 my $buf;
-                while ( $fh->sysread( $buf, 4096 ) ) {
+                while ( $fh->sysread( $buf, 40960 ) ) {
                     $self->{children}{$ch_id}->{json_msg} .= $buf;
                 }
 
@@ -124,7 +124,7 @@ sub finish {
 
     while( ( my $child = waitpid( -1, WNOHANG ) ) > 0 ) {
         my $buf;
-        while ( $self->{children}{$child}->{fd}->sysread( $buf, 4096 ) ) {
+        while ( $self->{children}{$child}->{fd}->sysread( $buf, 40960 ) ) {
             $self->{children}{$child}->{json_msg} .= $buf;
         }
 
