@@ -76,7 +76,7 @@ sub execute_eventloop {
 
                 my $ch_id;
                 for my $child ( keys %{ $self->{children} } ) {
-                    if ( $self->{children}{$child}{fd} == $fh ) {
+                    if ( $self->{children}{$child}{fd} && $self->{children}{$child}{fd} == $fh ) {
                         $ch_id = $child;
                         last;
                     }
