@@ -91,11 +91,24 @@ sub to_msg_json {
     return encode_json( $tap_ref );
 }
 
+use Data::Dumper;
+
 sub from_msg_json {
     my $pkg  = shift;
     my $json = shift;
 
     my $tap_ref = decode_json( $json );
+
+    eval {
+        my $tap_tree = TAP::Tree->new(
+            tap_tree => $tap_ref->{tap_tree},
+            utf8 => 1
+            );
+    };
+
+    if ( $@ ) {
+        print Dumper( $tap_ref );
+    }
 
     my $tap = Shunme::TAP->new(
         test_script => $tap_ref->{test_script},

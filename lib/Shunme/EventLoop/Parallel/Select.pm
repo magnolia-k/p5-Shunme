@@ -24,7 +24,7 @@ sub initialize {
 
     $obj = $self;
 
-    $self->{max_worker} = 4;
+    $self->{max_worker} = 10;
 }
 
 
