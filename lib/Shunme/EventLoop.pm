@@ -31,6 +31,7 @@ sub new {
     my $self = {
         iterator    => $params{iterator},
         formatter   => $params{formatter},
+        library     => $params{library},
         aggregator  => Shunme::Aggregator->new,
 
         max_worker  => 10,

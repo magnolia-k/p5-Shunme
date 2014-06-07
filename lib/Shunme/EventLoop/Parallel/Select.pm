@@ -110,7 +110,10 @@ sub execute_test_script {
     my $test_script = shift;
     my $pa = shift;
 
-    my $tap = Shunme::TAP->create_from( test_script => $test_script );
+    my $tap = Shunme::TAP->create_from(
+            test_script => $test_script,
+            library     => $self->{library},
+            );
     my $json = $tap->to_msg_json;
 
     $pa->syswrite( $json );

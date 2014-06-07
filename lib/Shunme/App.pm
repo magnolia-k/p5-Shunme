@@ -16,6 +16,11 @@ sub new {
         argv    => [],
         cmd     => undef,
         verbose => undef,
+        library => {
+            lib     => undef,
+            blib    => undef,
+            include => [],
+        },
     };
 
     bless $self, $class;
@@ -28,8 +33,9 @@ sub parse_options {
     my @argv = @_;
 
     GetOptionsFromArray( \@argv,
-            'v|verbose' => sub { $self->{verbose}++ },
-            'b|blib'    => sub { $self->{blib}++ },
+            'v|verbose' => sub { $self->{verbose}++         },
+            'b|blib'    => sub { $self->{library}{blib}++   },
+            'l|lib'     => sub { $self->{library}{lib}++    },
             );
 
     $self->{argv} = \@argv;
@@ -62,6 +68,7 @@ sub _run_cmd_runtests {
     my $condition = Shunme::Harness::Condition->new(
            test_scripts => \@test_scripts,
            verbose      => $self->{verbose},
+           library      => $self->{library},
            );
 
     require Shunme::Harness;

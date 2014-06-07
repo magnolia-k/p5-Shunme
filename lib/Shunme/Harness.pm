@@ -28,7 +28,7 @@ sub run_tests {
     require Shunme::Formatter;
     my $formatter = Shunme::Formatter->create_formatter(
             module  => $self->{condition}->formatter,
-            verbose => $self->{verbose},
+            verbose => $self->{condition}->verbose,
             );
 
     require Shunme::EventLoop;
@@ -36,6 +36,7 @@ sub run_tests {
             module      => $self->{condition}->eventloop,
             formatter   => $formatter,
             iterator    => $iterator,
+            library     => $self->{condition}->library,
             );
 
     my $aggregated = $eventloop->execute_eventloop;

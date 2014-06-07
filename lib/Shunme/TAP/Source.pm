@@ -24,6 +24,8 @@ sub new {
         test_script => $params{test_script},
         script_type => undef,
 
+        library     => $params{library},
+
         timeout     => $params{timeout} // 60 x 10, # Default timeout 10 minutes
     };
 
@@ -63,8 +65,20 @@ sub _initialize {
 sub execute_test_script {
     my $self = shift;
 
-    my $cmd = ( $self->{type} ) ?
-        "$^X $self->{test_script}" : $self->{test_script};
+    my $cmd;
+    if ( $self->{type} eq 'perl' ) {
+
+        $cmd = $^X . ' ';
+
+        if ( $self->{library} ) {
+            $cmd .= '-I' . join( ',', @{ $self->{library} } ) . ' ';
+        }
+
+        $cmd .= $self->{test_script};
+
+    } else {
+        $cmd = $self->{test_script};
+    }
 
     my $result = run_forked( $cmd, { timeout => $self->{timeout} } );
 
