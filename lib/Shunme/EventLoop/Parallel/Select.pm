@@ -53,7 +53,7 @@ sub execute_eventloop {
                 close $pa;
 
                 $selector->add( $ch );
-                $self->{children}{$pid} = { fd => $ch, json_msg => '' };
+                $self->{children}{$pid} = { fd => $ch, msg => '' };
 
             } else {
 
@@ -83,7 +83,7 @@ sub execute_eventloop {
 
                 my $buf;
                 while ( $fh->sysread( $buf, 4096 ) ) {
-                    $self->{children}{$ch_id}->{json_msg} .= $buf;
+                    $self->{children}{$ch_id}->{msg} .= $buf;
                 }
 
             }
@@ -113,9 +113,9 @@ sub execute_test_script {
             test_script => $test_script,
             library     => $self->{library},
             );
-    my $json = $tap->to_msg_json;
+    my $serialized = $tap->serialize;
 
-    $pa->syswrite( $json );
+    $pa->syswrite( $serialized );
 }
 
 sub finish {
@@ -124,16 +124,16 @@ sub finish {
     while( ( my $child = waitpid( -1, WNOHANG ) ) > 0 ) {
         my $buf;
         while ( $self->{children}{$child}->{fd}->sysread( $buf, 4096 ) ) {
-            $self->{children}{$child}->{json_msg} .= $buf;
+            $self->{children}{$child}->{msg} .= $buf;
         }
 
         $selector->remove( $self->{children}{$child}->{fd} );
         close $self->{children}{$child}->{fd};
 
-        if ( $self->{children}{$child}->{json_msg} ) {
-            my $json = $self->{children}{$child}->{json_msg};
+        if ( $self->{children}{$child}->{msg} ) {
+            my $serialized = $self->{children}{$child}->{msg};
             require Shunme::TAP;
-            my $tap = Shunme::TAP->from_msg_json( $json );
+            my $tap = Shunme::TAP->create_from_serialized( $serialized );
 
             $self->{formatter}->format_tap_output( tap => $tap );
             $self->{aggregator}->add( tap_summary => $tap->summary );

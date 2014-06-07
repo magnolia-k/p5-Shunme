@@ -6,7 +6,7 @@ use v5.10.1;
 use utf8;
 
 use Carp;
-use JSON;
+use Storable qw[freeze thaw];
 
 require Shunme::TAP::Source;
 require TAP::Tree;
@@ -76,7 +76,7 @@ sub stderr      { return ${ $_[0]->{stderr_ref} }   }
 sub merged      { return ${ $_[0]->{merged_ref} }   }
 
 # serialize methods
-sub to_msg_json {
+sub serialize {
     my $self = shift;
 
     my $tap_ref = {
@@ -85,17 +85,16 @@ sub to_msg_json {
         tap_tree    => $self->{tap_tree}->tap_tree,
         stdout      => ${ $self->{stdout_ref} },
         stderr      => ${ $self->{stderr_ref} },
-        merged      => undef,
     };
 
-    return encode_json( $tap_ref );
+    return freeze( $tap_ref );
 }
 
-sub from_msg_json {
-    my $pkg  = shift;
-    my $json = shift;
+sub create_from_serialized {
+    my $pkg    = shift;
+    my $serial = shift;
 
-    my $tap_ref = decode_json( $json );
+    my $tap_ref = thaw( $serial );
 
     my $tap = Shunme::TAP->new(
         test_script => $tap_ref->{test_script},
@@ -106,7 +105,6 @@ sub from_msg_json {
             ),
         stdout_ref   => \$tap_ref->{stdout},
         stderr_ref   => \$tap_ref->{stderr},
-        merged_ref   => \$tap_ref->{merged},
         );
 
     return $tap;
