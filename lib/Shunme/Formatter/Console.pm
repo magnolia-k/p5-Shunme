@@ -19,8 +19,8 @@ sub format_tap_output {
     } else {
         my $summary = $params{tap}->summary;
 
-        if ( $summary->{fail} == 0 ) {
-            say $params{tap}->test_script . "\t" . $summary->{planned_tests};
+        if ( $summary->{failed_tests} == 0 ) {
+            say $params{tap}->test_script . "\t" . $summary->{ran_tests} . '/' . $summary->{planned_tests};
         } else {
             say $params{tap}->test_script;
             print $params{tap}->stderr;

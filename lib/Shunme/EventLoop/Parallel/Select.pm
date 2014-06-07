@@ -133,6 +133,7 @@ sub finish {
             require Shunme::TAP;
             my $tap = Shunme::TAP->from_msg_json( $json );
 
+            $self->{formatter}->format_tap_output( tap => $tap );
             $self->{aggregator}->add( tap_summary => $tap->summary );
         }
 
