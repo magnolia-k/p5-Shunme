@@ -20,7 +20,9 @@ sub format_tap_output {
         my $summary = $params{tap}->summary;
 
         if ( $summary->{failed_tests} == 0 ) {
-            say $params{tap}->test_script . "\t" . $summary->{ran_tests} . '/' . $summary->{planned_tests};
+            my $plan = $summary->{planned_tests} ? $summary->{planned_tests} :
+                '?';
+            say $params{tap}->test_script . "\t" . $summary->{ran_tests} . '/' . $plan;
         } else {
             say $params{tap}->test_script;
             print $params{tap}->stderr;
