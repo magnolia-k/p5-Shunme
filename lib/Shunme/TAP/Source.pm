@@ -85,8 +85,8 @@ sub execute_test_script {
     my $tap = Shunme::TAP->new(
         test_script => $self->{test_script},
         exit_code   => $result->{exit_code},
-        stdout_ref  => \decode( 'UTF-8', $result->{stdout} ),
-        stderr_ref  => \decode( 'UTF-8', $result->{stderr} ),
+        stdout_ref  => \$result->{stdout},
+        stderr_ref  => \$result->{stderr},
         );
 
     return $tap;

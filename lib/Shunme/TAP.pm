@@ -71,9 +71,8 @@ sub summary {
 sub test_script { return $_[0]->{test_script}   }
 sub tap_tree    { return $_[0]->{tap_tree}      }
 sub exit_code   { return $_[0]->{exit_code}     }
-sub stdout      { return ${ $_[0]->{stdout_ref} }   }
-sub stderr      { return ${ $_[0]->{stderr_ref} }   }
-sub merged      { return ${ $_[0]->{merged_ref} }   }
+sub stdout      { return decode( 'UTF-8', ${ $_[0]->{stdout_ref} } )  }
+sub stderr      { return decode( 'UTF-8', ${ $_[0]->{stderr_ref} } )  }
 
 # serialize methods
 sub serialize {
