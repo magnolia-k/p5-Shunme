@@ -7,6 +7,7 @@ use utf8;
 
 use Carp;
 use Storable qw[freeze thaw];
+use Encode;
 
 require Shunme::TAP::Source;
 require TAP::Tree;
