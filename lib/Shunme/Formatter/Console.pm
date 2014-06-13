@@ -22,16 +22,23 @@ sub format_tap_output {
         if ( $summary->{failed_tests} == 0 ) {
 
             my $plan;
+            my $skipped = '';
             if ( ! defined $summary->{planned_tests} ) {
                 $plan = '?';
-            } elsif ( $summary->{planned_tests} == 0 ) {
+            } elsif ( $summary->{is_skipped_all} ) {
                 $plan = '0';
+                $skipped .= ' ' . $summary->{skip_all_msg};
             } else {
                 $plan = $summary->{planned_tests};
             }
 
-            say $self->format_line( $params{tap}->test_script ) . " " .
-                $summary->{ran_tests} . '/' . $plan;
+            if ( $summary->{is_skipped_all} ) {
+                say $self->format_line( $params{tap}->test_script ) . $skipped;
+            } else {
+                say $self->format_line( $params{tap}->test_script ) . " " .
+                    $summary->{ran_tests} . '/' . $plan;
+            }
+
         } else {
             say $params{tap}->test_script;
             print $params{tap}->stderr;
@@ -50,11 +57,11 @@ sub format_line {
         $length = length( $str );
     }
 
-    if ( $length >= 50 ) {
+    if ( $length >= 30 ) {
         return $str;
     }
 
-    my $tmp = $str . ' ' . '.' x ( 49 - $length );
+    my $tmp = $str . ' ' . '.' x ( 29 - $length );
 
     return $tmp;
 }
